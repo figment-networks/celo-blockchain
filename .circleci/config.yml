@@ -207,6 +207,7 @@ jobs:
             ssh-keygen -F github.com -l -f ~/.ssh/known_hosts | grep "github.com RSA ${GITHUB_RSA_FINGERPRINT}"
             git clone --depth 1 https://github.com/celo-org/celo-monorepo.git celo-monorepo
             cd celo-monorepo
+            git fetch --depth 1 origin ${CELO_MONOREPO_COMMIT_OR_BRANCH}
             git checkout ${CELO_MONOREPO_COMMIT_OR_BRANCH}
             yarn install || yarn install
             yarn build --scope @celo/celotool --include-filtered-dependencies

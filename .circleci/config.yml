@@ -1,6 +1,6 @@
 version: 2.1
 parameters:
-  # Use this git tag or commit of the monorepo to build the system contracts. 
+  # Use this git tag or commit of the monorepo to build the system contracts.
   system-contracts-monorepo-version:
     type: string
     default: "celo-core-contracts-v3.rc0"
@@ -22,7 +22,8 @@ executors:
     working_directory: ~/repos/celo-monorepo/packages/celotool
     environment:
       GO_VERSION: "1.16.4"
-      CELO_MONOREPO_BRANCH_TO_TEST: master
+      # TODO: change with commit from master after this PR has been merged, and specify the date here too
+      CELO_MONOREPO_COMMIT_OR_BRANCH: d1d5c7a9f9b0aff93af8df7d49014347f56ccaf4
       GITHUB_RSA_FINGERPRINT: SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8
 jobs:
   build-geth:
@@ -204,8 +205,9 @@ jobs:
             set -e
             mkdir ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
             ssh-keygen -F github.com -l -f ~/.ssh/known_hosts | grep "github.com RSA ${GITHUB_RSA_FINGERPRINT}"
-            git clone --depth 1 https://github.com/celo-org/celo-monorepo.git celo-monorepo -b ${CELO_MONOREPO_BRANCH_TO_TEST}
+            git clone --depth 1 https://github.com/celo-org/celo-monorepo.git celo-monorepo
             cd celo-monorepo
+            git checkout ${CELO_MONOREPO_COMMIT_OR_BRANCH}
             yarn install || yarn install
             yarn build --scope @celo/celotool --include-filtered-dependencies
       - run:
